@@ -8,7 +8,9 @@
   },
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "deploy": "surge -d https://genetic-life.surge.sh -p ./dist",
+    "release": "npm run build && npm run deploy"
   },
   "repository": {
     "type": "git",
