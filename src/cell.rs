@@ -67,6 +67,23 @@ impl Cell {
 
   pub fn live_on(&mut self) {
     self.age += 1;
+    if self.age > (self.life_expectancy as f64 * 0.75).floor() as u32
+      && js_sys::Math::random() > 0.99
+    {
+      // Introduce mutation
+      fn mutate(x: u8) -> u8 {
+        x ^ (rand_range(0, 255) & rand_range(0, 255))
+      }
+
+      let gene = rand_range(0, 2);
+      match gene {
+        0 => self.r = mutate(self.r),
+        1 => self.g = mutate(self.g),
+        2 => self.b = mutate(self.b),
+        _ => (),
+      };
+    }
+
     self.decode_genome();
     if self.age > self.life_expectancy {
       self.kill();
