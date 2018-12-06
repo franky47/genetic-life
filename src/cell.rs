@@ -124,12 +124,22 @@ impl Cell {
       (prob * (h - d) as f64).round() as i32
     }
 
-    const AVERAGE_LIFE_EXPECTANCY: i32 = 500;
+    // Reduce the life of low-brightness cells
+    let b = (0.2126 * self.r as f64 + 0.7152 * self.g as f64 + 0.0722 * self.b as f64) / 255.;
+    fn sigmoid(x: f64) -> f64 {
+      let a = 8.;
+      let b = 6.;
+      (a * x + b).tanh() * 0.5 + 0.5
+    }
+    let average_life_expectancy = (sigmoid(b) * 500.).round() as i32;
 
-    self.life_expectancy = (AVERAGE_LIFE_EXPECTANCY
-      + factor(health_r, disease_r, prob_r)
-      + factor(health_g, disease_g, prob_g)
-      + factor(health_b, disease_b, prob_b)) as u32;
+    self.life_expectancy = std::cmp::max(
+      0,
+      average_life_expectancy
+        + factor(health_r, disease_r, prob_r)
+        + factor(health_g, disease_g, prob_g)
+        + factor(health_b, disease_b, prob_b),
+    ) as u32;
   }
 }
 
