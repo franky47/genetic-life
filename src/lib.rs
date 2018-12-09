@@ -20,6 +20,7 @@ pub struct Universe {
   width: u32,
   height: u32,
   cells: Vec<Cell>,
+  framebuffer: Vec<u32>,
 }
 
 #[wasm_bindgen]
@@ -27,11 +28,13 @@ impl Universe {
   pub fn new(width: u32, height: u32) -> Universe {
     utils::set_panic_hook();
     let cells: Vec<Cell> = (0..width * height).map(|_| Cell::new()).collect();
+    let framebuffer = cells.iter().map(|c| c.get_color()).collect();
 
     Universe {
       width,
       height,
       cells,
+      framebuffer,
     }
   }
 
@@ -68,14 +71,14 @@ impl Universe {
             next[idx].give_birth(parents);
           }
         }
+        self.framebuffer[idx] = next[idx].get_color();
       }
     }
     self.cells = next;
   }
 
-  pub fn cell(&self, row: u32, column: u32) -> Cell {
-    let idx = self.get_index(row, column);
-    self.cells[idx]
+  pub fn framebuffer(&self) -> *const u32 {
+    self.framebuffer.as_ptr()
   }
 }
 

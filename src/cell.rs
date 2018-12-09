@@ -17,16 +17,6 @@ pub struct Cell {
   life_expectancy: u32,
 }
 
-#[wasm_bindgen]
-impl Cell {
-  pub fn get_color_hex(&self) -> String {
-    if !self.alive {
-      return String::from("#000000");
-    }
-    format!("#{:02x}{:02x}{:02x}", self.r, self.g, self.b)
-  }
-}
-
 impl Cell {
   pub fn new() -> Cell {
     let mut c = Cell {
@@ -39,9 +29,9 @@ impl Cell {
   pub fn reset(&mut self) {
     self.alive = js_sys::Math::random() > 0.5;
     if self.alive {
-    self.r = rand_range(0, 255);
-    self.g = rand_range(0, 255);
-    self.b = rand_range(0, 255);
+      self.r = rand_range(0, 255);
+      self.g = rand_range(0, 255);
+      self.b = rand_range(0, 255);
     } else {
       self.r = 0;
       self.g = 0;
@@ -52,20 +42,13 @@ impl Cell {
   }
 
   pub fn give_birth(&mut self, parents: [&Cell; 3]) {
-    let was_alive = self.alive;
+    // let was_alive = self.alive;
     self.r = mix_genes([&parents[0].r, &parents[1].r, &parents[2].r]);
     self.g = mix_genes([&parents[0].g, &parents[1].g, &parents[2].g]);
     self.b = mix_genes([&parents[0].b, &parents[1].b, &parents[2].b]);
-    self.alive = match self.get_color() {
-      0x00000 => false, // Unviable
-      0xfffff => false, // Unviable
-      _ => true,
-    };
-
-    if self.alive && !was_alive {
-      self.age = 0;
-      self.decode_genome();
-    }
+    self.alive = self.get_color() != 0;
+    self.age = 0;
+    self.decode_genome();
   }
 
   pub fn live_on(&mut self) {

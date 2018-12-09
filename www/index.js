@@ -1,4 +1,5 @@
 import { Universe } from 'wasm-game-of-life'
+import { memory } from 'wasm-game-of-life/wasm_game_of_life_bg'
 
 const width = 100
 const height = 100
@@ -83,14 +84,16 @@ const drawGrid = () => {
   ctx.stroke()
 }
 
+const cellsPtr = universe.framebuffer()
+
 const drawCells = () => {
   ctx.beginPath()
+  const cells = new Uint32Array(memory.buffer, cellsPtr, width * height)
 
   for (let row = 0; row < height; row++) {
     for (let col = 0; col < width; col++) {
-      const cell = universe.cell(row, col)
-
-      ctx.fillStyle = cell.get_color_hex()
+      const idx = row * width + col
+      ctx.fillStyle = `#${cells[idx].toString(16).padStart(6, '0')}`
 
       ctx.fillRect(
         col * (CELL_SIZE + 1) + 1,
