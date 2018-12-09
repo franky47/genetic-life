@@ -41,9 +41,15 @@ impl Cell {
 
   pub fn reset(&mut self) {
     self.alive = js_sys::Math::random() > 0.5;
+    if self.alive {
     self.r = rand_range(0, 255);
     self.g = rand_range(0, 255);
     self.b = rand_range(0, 255);
+    } else {
+      self.r = 0;
+      self.g = 0;
+      self.b = 0;
+    }
     self.age = 0;
     self.decode_genome();
   }
