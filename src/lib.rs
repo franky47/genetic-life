@@ -39,8 +39,13 @@ impl Universe {
   }
 
   pub fn reset(&mut self) {
-    for cell in &mut self.cells {
-      cell.reset();
+    for row in 0..self.height {
+      for col in 0..self.width {
+        let idx = self.get_index(row, col);
+        let cell = &mut self.cells[idx];
+        cell.reset();
+        self.framebuffer[idx] = cell.get_color();
+      }
     }
   }
 
