@@ -1,6 +1,3 @@
-extern crate js_sys;
-extern crate wasm_bindgen;
-
 use wasm_bindgen::prelude::*;
 
 fn rand_range(min: u8, max: u8) -> u8 {

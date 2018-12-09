@@ -1,10 +1,7 @@
-extern crate cfg_if;
-extern crate wasm_bindgen;
-
 pub mod cell;
 mod utils;
 
-use cell::Cell;
+use crate::cell::Cell;
 use cfg_if::cfg_if;
 use wasm_bindgen::prelude::*;
 
